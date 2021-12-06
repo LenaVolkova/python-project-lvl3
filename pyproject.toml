@@ -6,6 +6,7 @@ authors = ["Elena Volkova <lenochka.volkova@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+flake8 = "^4.0.1"
 
 [tool.poetry.dev-dependencies]
 
