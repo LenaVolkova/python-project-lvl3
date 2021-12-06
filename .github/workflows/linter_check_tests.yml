@@ -1,0 +1,23 @@
+name: Linter and Test Check
+on: [push]
+jobs:
+  linter-test-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install poetry
+          make install
+          make lint
+          make test
+      - name: Test & publish code coverage
+        uses: paambaati/codeclimate-action@v2.7.4
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.TEST_COVERAGE }}
+        with:
+          coverageCommand: make test-coverage
+          debug: true
