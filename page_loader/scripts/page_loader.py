@@ -3,7 +3,6 @@
 
 import argparse
 import os
-from posixpath import dirname
 import requests
 import re
 from bs4 import BeautifulSoup
@@ -26,9 +25,8 @@ def download(url, output_path):
             imgname = make_img_name(image_url, dirname)
             print(imgname)
             with open(imgname, "wb+") as img_file:
-                img_file.write(new_r.content)    
+                img_file.write(new_r.content)
             img['src'] = imgname
-              
     filename = make_name(url, output_path, "file")
     with open(filename, "w+") as f:
         f.write(soup.prettify())
@@ -47,7 +45,7 @@ def get_domain(url):
     if ':' in url:
         return url.split(':')[0]
     return url.split('/')[0]
-    
+
 
 def make_name(url, output_path, key):
     if len(url.split("://", maxsplit=1)) == 2:
@@ -72,15 +70,14 @@ def make_img_name(url, output_path):
     else:
         after_last_fullstop = url_name.split(".")[-1]
         if len(after_last_fullstop) <= 4 and after_last_fullstop.isalpha():
-            name = re.sub(r'[^\w]', '-', '.'.join(re.split(r'\.',url_name)[0:-1]))
+            name = re.sub(r'[^\w]', '-', '.'.join(re.split(r'\.', url_name)[0:-1]))
             img_name = '.'.join([name, after_last_fullstop])
         else:
             img_name = re.sub(r'[^\w]', '-', url_name)
     return os.path.join(output_path, img_name)
 
 
-
-def make_imgurl (url, image):
+def make_imgurl(url, image):
     url_schema = get_schema(url)
     url_domain = get_domain(url)
     if image[0] == "/":
@@ -97,7 +94,6 @@ def to_download(url, img_url):
         return True
     return False
 
-    
 
 def main():
     parser = argparse.ArgumentParser(description='Page loader')
