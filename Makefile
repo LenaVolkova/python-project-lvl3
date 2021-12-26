@@ -11,11 +11,16 @@ package-install:
 package-install-reinforced:
 	python3 -m pip install --user --force-reinstall dist/*.whl
 
-#lint:
-#	poetry run flake8 gendiff
+page_loader:
+	poety run page_loader -h
 
-#test:
-#	poetry run pytest
+lint:
+	poetry run flake8 page_loader
 
-#test-coverage:
-#	poetry run pytest --cov=./gendiff --cov-report xml
+test:
+	poetry run pytest
+
+test-coverage:
+	poetry run pytest --cov=./page_loader --cov-report xml
+
+.PHONY: page_loader
