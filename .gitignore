@@ -6,3 +6,4 @@ data/
 .coverage
 coverage.xml
 temp/
+file.log
