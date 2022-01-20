@@ -79,12 +79,12 @@ def test_downloading_page_and_resources():
             assert os.path.isfile(js_filename)
 
 
-def test_status_not_200():
+def test_status_404():
     text1 = 'testdata\n'
     with tempfile.TemporaryDirectory() as tmpdirname:
         with requests_mock.Mocker() as m:
-            m.get(url, text=text1, status_code=400)
+            m.get(url, text=text1, status_code=404)
             try:
                 download(url, tmpdirname) 
-            except SystemExit:
+            except Exception:
                 assert True

@@ -1,4 +1,4 @@
-from page_loader.scripts.page_loader import main, download
+from page_loader.scripts.page_loader import main
 
 
-__all__ = ('download', 'main')
+__all__ = ('main')
