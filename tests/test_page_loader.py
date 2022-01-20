@@ -1,5 +1,5 @@
 import pytest
-from page_loader.scripts.page_loader import download
+from page_loader import download
 import requests
 import requests_mock
 import tempfile
