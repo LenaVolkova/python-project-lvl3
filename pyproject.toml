@@ -21,7 +21,7 @@ requests-mock = "^1.9.3"
 coverage = "^6.2"
 
 [tool.poetry.scripts]
-page_loader = "page_loader.scripts.page_loader:main"
+page-loader = "page_loader.scripts.page_loader:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
