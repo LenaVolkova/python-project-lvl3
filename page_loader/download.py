@@ -148,9 +148,9 @@ def make_extension(content_type, tag):
         if k in content_type:
             return extensions[k]
     if tag == 'link':
-        return 'html'
+        return '.html'
     if tag == 'script':
-        return 'js'
+        return '.js'
     return ''
 
 
