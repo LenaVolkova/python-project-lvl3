@@ -82,7 +82,7 @@ def process_tags(soup, tag, attribute, url, dirname, dirurl):
                     content_t = new_r.headers['content-type']
                 else:
                     content_t = ''
-                resname = make_res_name(resource_url, url, content_t)
+                resname = make_res_name(resource_url, url, content_t, tag)
                 respath = os.path.join(dirname, resname)
                 try:
                     with open(respath, mode) as saved_file:
@@ -113,7 +113,7 @@ def make_name(url, output_path, key):
     return os.path.join(output_path, name)
 
 
-def make_res_name(resource, main_url, content_type):
+def make_res_name(resource, main_url, content_type, tag):
     res_url = urlparse(resource)
     if res_url[1] == '':
         url_name = ''.join([urlparse(main_url)[1], res_url[2]])
@@ -129,11 +129,11 @@ def make_res_name(resource, main_url, content_type):
         else:
             res_name = re.sub(r'[^\w]', '-', url_name)
     if '.' not in res_name:
-        return ''.join([res_name, make_extension(content_type)])
+        return ''.join([res_name, make_extension(content_type, tag)])
     return res_name
 
 
-def make_extension(content_type):
+def make_extension(content_type, tag):
     extensions = {
         'gif': '.gif',
         'jpeg': '.jpeg',
@@ -147,6 +147,10 @@ def make_extension(content_type):
     for k in extensions:
         if k in content_type:
             return extensions[k]
+    if tag == 'link':
+        return 'html'
+    if tag == 'script':
+        return 'js'
     return ''
 
 
