@@ -1,6 +1,4 @@
-import pytest
 from page_loader import download
-import requests
 import requests_mock
 import tempfile
 import os
@@ -10,7 +8,7 @@ url = 'https://ru.hexlet.io/courses'
 url_img = 'https://ru.hexlet.io/assets/professions/nodejs.png'
 url_link1 = '/assets/application.css'
 url_link2 = '/courses'
-url_script= 'https://ru.hexlet.io/packs/js/runtime.js'
+url_script = 'https://ru.hexlet.io/packs/js/runtime.js'
 
 with open("./tests/fixtures/input.html", 'r') as input_file:
     input_text = input_file.read()
@@ -23,23 +21,25 @@ with open("./tests/fixtures/picture.png", 'rb') as img_file:
 with open("./tests/fixtures/ru-hexlet-io-courses.html", 'r') as output_file:
     output_text1 = output_file.read()
 
+
 def test_download():
     text1 = 'testdata\n'
     with tempfile.TemporaryDirectory() as tmpdirname:
         with requests_mock.Mocker() as m:
             m.get(url, text=text1)
-            filename = download(url, tmpdirname) 
+            filename = download(url, tmpdirname)
             assert filename == tmpdirname + '/ru-hexlet-io-courses.html'
             with open(filename, 'r') as f:
                 content = f.read()
                 assert content == text1
+
 
 def test_downloading_page_with_images():
     with tempfile.TemporaryDirectory() as tmpdirname:
         with requests_mock.Mocker() as m:
             m.get(url, text=input_text)
             m.get(url_img, content=img_content, headers={'content-type': 'png'})
-            filename = download(url, tmpdirname) 
+            filename = download(url, tmpdirname)
             assert filename == tmpdirname + '/ru-hexlet-io-courses.html'
             with open(filename, 'r') as file1:
                 output = file1.read()
@@ -49,6 +49,7 @@ def test_downloading_page_with_images():
             img_filename = os.path.join(dir_name, 'ru-hexlet-io-assets-professions-nodejs.png')
             assert os.path.exists(img_filename)
             assert os.path.isfile(img_filename)
+
 
 def test_downloading_page_and_resources():
     with tempfile.TemporaryDirectory() as tmpdirname:
@@ -85,6 +86,6 @@ def test_status_404():
         with requests_mock.Mocker() as m:
             m.get(url, text=text1, status_code=404)
             try:
-                download(url, tmpdirname) 
+                download(url, tmpdirname)
             except Exception:
                 assert True
