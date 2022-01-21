@@ -27,6 +27,9 @@ def download(url, output_path):
     filename = ''
     if output_path is None:
         output_path = os.getcwd()
+    if not os.access(output_path, os.W_OK):
+        log1.error("No permissions for writing to output path")
+        raise Exception('no permissions for writing')
     log1.info('{} will be save to {}'.format(url, output_path))
     r = requests.get(url)
     if r.status_code != 200:
