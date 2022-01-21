@@ -78,7 +78,11 @@ def process_tags(soup, tag, attribute, url, dirname, dirurl):
                 log1.warning('response with code {} from {}'.format(new_r.status_code, resource_url))
             else:
                 log1.info('response with code {} from {}'.format(new_r.status_code, resource_url))
-                resname = make_res_name(resource_url, url, new_r.headers['content-type'])
+                if 'content-type' in new_r.headers:
+                    content_t = new_r.headers['content-type']
+                else:
+                    content_t = ''
+                resname = make_res_name(resource_url, url, content_t)
                 respath = os.path.join(dirname, resname)
                 try:
                     with open(respath, mode) as saved_file:
