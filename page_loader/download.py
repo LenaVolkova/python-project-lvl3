@@ -57,10 +57,6 @@ def download(url, output_path):
 
 
 def process_tags(soup, tag, attribute, url, dirname, dirurl):
-    if tag == 'img':
-        mode = 'wb+'
-    else:
-        mode = 'w+'
     bar = Bar('Downloading {}-resources'.format(tag), max=len(soup.find_all(tag)))
     for res in soup.find_all(tag):
         resource = res.get(attribute)
@@ -85,11 +81,8 @@ def process_tags(soup, tag, attribute, url, dirname, dirurl):
                 resname = make_res_name(resource_url, url, content_t, tag)
                 respath = os.path.join(dirname, resname)
                 try:
-                    with open(respath, mode) as saved_file:
-                        if tag == 'img':
-                            saved_file.write(new_r.content)
-                        else:
-                            saved_file.write(new_r.text)
+                    with open(respath, 'wb+') as saved_file:
+                        saved_file.write(new_r.content)
                     log1.info('{} has been saved to {}'.format(resource, respath))
                 except Exception as e:
                     log1.error(e)
