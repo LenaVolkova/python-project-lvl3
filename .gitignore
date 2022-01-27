@@ -7,3 +7,4 @@ data/
 coverage.xml
 temp/
 file.log
+**/.DS_Store
