@@ -9,16 +9,16 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-flake8 = "^3.9.2"
 requests = "^2.26.0"
-pytest-cov = "^3.0.0"
-pytest = "^6.2.5"
 beautifulsoup4 = "^4.10.0"
 progress = "^1.6"
 
 [tool.poetry.dev-dependencies]
 requests-mock = "^1.9.3"
 coverage = "^6.2"
+flake8 = "^4.0.1"
+pytest = "^6.2.5"
+pytest-cov = "^3.0.0"
 
 [tool.poetry.scripts]
 page-loader = "page_loader.scripts.page_loader:main"
