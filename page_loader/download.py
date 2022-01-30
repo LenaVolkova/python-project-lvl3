@@ -20,7 +20,7 @@ class RequestError(DownloadingErrors):
         self.url = url
         self.code = code
         super().__init__(
-            f"RequestError: {url} can't be downloaded, status_code = {code}"
+            f"RequestError: {url}, status_code = {code}"
         )
 
 
@@ -37,7 +37,7 @@ class FileError(DownloadingErrors):
         self.path = path
         self.info = info
         super().__init__(
-            f"FileError: problem {info} with {path}"
+            f"FileError: {info} {path}"
         )
 
 
@@ -67,18 +67,19 @@ def find_tags(soup, url):
         for res in soup.find_all(tag):
             attribute = TAGS[tag]
             resource = res.get(attribute)
-            if to_download(url, resource):
-                resource_url = urljoin(url, resource)
-                filename, ext = make_filename(resource_url, url)
-                res_for_downloading = {
-                    "res": res,
-                    "tag": tag,
-                    "attr": attribute,
-                    "url": resource_url,
-                    "filename": filename,
-                    "ext": ext
-                }
-                list_of_resources.append(res_for_downloading)
+            if not to_download(url, resource):
+                continue
+            resource_url = urljoin(url, resource)
+            filename, ext = make_filename(resource_url, url)
+            res_for_downloading = {
+                "res": res,
+                "tag": tag,
+                "attr": attribute,
+                "url": resource_url,
+                "filename": filename,
+                "ext": ext
+            }
+            list_of_resources.append(res_for_downloading)
     return list_of_resources
 
 

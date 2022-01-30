@@ -7,5 +7,5 @@
 
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0a98ff3bd551873eb802/test_coverage)](https://codeclimate.com/github/LenaVolkova/python-project-lvl3/test_coverage)
 
-'PAGE_LOADER' can download html-page and its local resources like images, scripts and links into directory specified by the user. 
-[![asciicast](https://asciinema.org/a/WCbygH5HxCPr03wR9YsrHjU1g.svg)](https://asciinema.org/a/WCbygH5HxCPr03wR9YsrHjU1g)
+'PAGE_LOADER' can download html-page and its local resources like images, scripts and links into directory specified by the user. There is logging and errors processing implemented in the module.
+[![asciicast](https://asciinema.org/a/YFKY6Uw7UUkgucUXaHPo3oAo2.svg)](https://asciinema.org/a/YFKY6Uw7UUkgucUXaHPo3oAo2)
