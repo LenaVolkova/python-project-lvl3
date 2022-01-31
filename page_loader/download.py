@@ -9,6 +9,8 @@ import logging
 
 TAGS = {"img": "src", "link": "href", "script": "src"}
 LOG = logging.getLogger(__name__)
+TEMPLATE = r'[^\w]'
+SYMB = '-'
 
 
 class DownloadingErrors(Exception):
@@ -42,7 +44,6 @@ class FileError(DownloadingErrors):
 
 
 def download(url, output_path):
-    filename = ''
     if output_path is None:
         output_path = os.getcwd()
     if not os.path.isdir(output_path):
@@ -52,7 +53,10 @@ def download(url, output_path):
         LOG.error("No permissions for writing to output path {}".format(output_path))
         raise FileError("no permissions for writing", output_path)
     LOG.info('{} will be save to {}'.format(url, output_path))
-    filename, dirname, dirurl = make_base_names(url, output_path)
+    name = make_filename(url)[0]
+    dirurl = "{}_files".format(name)
+    dirname = os.path.join(output_path, "{}_files".format(name))
+    filename = os.path.join(output_path, "{}.html".format(name))
     r = make_request(url)
     soup = BeautifulSoup(r.text, 'html.parser')
     resources_for_download = find_tags(soup, url)
@@ -70,7 +74,7 @@ def find_tags(soup, url):
             if not to_download(url, resource):
                 continue
             resource_url = urljoin(url, resource)
-            filename, ext = make_filename(resource_url, url)
+            filename, ext = make_filename(resource_url)
             res_for_downloading = {
                 "res": res,
                 "tag": tag,
@@ -107,33 +111,25 @@ def download_and_save_resources(list_of_resources, dirname, dirurl):
     return
 
 
-def make_base_names(url, output_path):
-    parsed_url = urlparse(url)
-    url_name = parsed_url.netloc + parsed_url.path
-    urlname = re.sub(r'[^\w]', '-', url_name)
-    filename = os.path.join(output_path, "{}.html".format(urlname))
-    dir = os.path.join(output_path, "{}_files".format(urlname))
-    url_part = "{}_files".format(urlname)
-    return filename, dir, url_part
-
-
-def make_filename(resource_url, main_url):
-    res_url = urlparse(resource_url)
+def make_filename(url):
     extension = ''
-    if res_url.netloc == '':
-        url_name = urlparse(main_url).netloc + res_url.path
-    else:
-        url_name = res_url.netloc + res_url.path
+    res_url = urlparse(url)
+    url_name = res_url.netloc + res_url.path
     if '.' not in url_name:
-        res_name = re.sub(r'[^\w]', '-', url_name)
+        res_name = make_name_by_template(url_name)
     else:
         after_last_fullstop = url_name.split(".")[-1]
         if len(after_last_fullstop) <= 4 and after_last_fullstop.isalpha():
-            res_name = re.sub(r'[^\w]', '-', '.'.join(re.split(r'\.', url_name)[0:-1]))
+            part_of_name = '.'.join(url_name.split(".")[0:-1])
+            res_name = make_name_by_template(part_of_name)
             extension = after_last_fullstop
         else:
-            res_name = re.sub(r'[^\w]', '-', url_name)
+            res_name = make_name_by_template(url_name)
     return res_name, extension
+
+
+def make_name_by_template(name, template=TEMPLATE, replacement=SYMB):
+    return re.sub(template, replacement, name)
 
 
 def make_extension(content_type, tag):
