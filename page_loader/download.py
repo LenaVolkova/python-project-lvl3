@@ -53,14 +53,14 @@ def download(url, output_path):
         LOG.error("No permissions for writing to output path {}".format(output_path))
         raise FileError("no permissions for writing", output_path)
     LOG.info('{} will be save to {}'.format(url, output_path))
-    name = make_filename(url)[0]
-    dirurl = "{}_files".format(name)
-    dirname = os.path.join(output_path, "{}_files".format(name))
-    filename = os.path.join(output_path, "{}.html".format(name))
     r = make_request(url)
     soup = BeautifulSoup(r.text, 'html.parser')
     resources_for_download = find_tags(soup, url)
+    name = make_filename(url)[0]
+    dirurl = "{}_files".format(name)
+    dirname = os.path.join(output_path, "{}_files".format(name))
     download_and_save_resources(resources_for_download, dirname, dirurl)
+    filename = os.path.join(output_path, "{}.html".format(name))
     save_to_file(filename, "w+", soup.prettify())
     return filename
 
@@ -112,20 +112,15 @@ def download_and_save_resources(list_of_resources, dirname, dirurl):
 
 
 def make_filename(url):
-    extension = ''
     res_url = urlparse(url)
     url_name = res_url.netloc + res_url.path
-    if '.' not in url_name:
-        res_name = make_name_by_template(url_name)
-    else:
+    if '.' in url_name:
         after_last_fullstop = url_name.split(".")[-1]
         if len(after_last_fullstop) <= 4 and after_last_fullstop.isalpha():
             part_of_name = '.'.join(url_name.split(".")[0:-1])
             res_name = make_name_by_template(part_of_name)
-            extension = after_last_fullstop
-        else:
-            res_name = make_name_by_template(url_name)
-    return res_name, extension
+            return res_name, after_last_fullstop
+    return make_name_by_template(url_name), ''
 
 
 def make_name_by_template(name, template=TEMPLATE, replacement=SYMB):
