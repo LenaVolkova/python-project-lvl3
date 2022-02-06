@@ -135,4 +135,3 @@ def test_fileerror(requests_mock):
     requests_mock.get(url, text=text1)
     tmpdirname = tempfile.TemporaryDirectory()
     download("ht://asapcg.com", tmpdirname.name + "wrong_name")
-    

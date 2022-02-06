@@ -1,5 +1,4 @@
 import os
-import requests
 from bs4 import BeautifulSoup
 import logging
 from page_loader.error import FileError
