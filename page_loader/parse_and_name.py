@@ -12,12 +12,12 @@ def find_resourcetags(soup, url):
     resources = []
     for tag, attribute in TAGS.items():
         for res in soup.find_all(tag):
-            resource = res.get(attribute)
-            LOG.info('{} is processing'.format(resource))
-            if not should_download(url, resource):
+            resource_link = res.get(attribute)
+            LOG.info('{} is processing'.format(resource_link))
+            if not should_download(url, resource_link):
                 continue
-            LOG.info('{} is to be saved'.format(resource))
-            resource_url = urljoin(url, resource)
+            LOG.info('{} is to be saved'.format(resource_link))
+            resource_url = urljoin(url, resource_link)
             filename, ext = make_name(resource_url)
             resource_for_downloading = {
                 "res": res,
