@@ -11,6 +11,15 @@ TAGS = {"img": "src", "link": "href", "script": "src"}
 LOG = logging.getLogger(__name__)
 
 
+class FileError(OSError):
+    def __init__(self, info, path):
+        self.path = path
+        self.info = info
+        super().__init__(
+            f"FileError: {info} {path}"
+        )
+
+
 def download(url, output_path):
     if output_path is None:
         output_path = os.getcwd()
@@ -62,7 +71,7 @@ def download_and_save_resources(resources, dirpath, dirurl):
             os.mkdir(dirpath)
         except OSError as e:
             LOG.error(e)
-            raise FileError("can't make directory", dirpath)
+            raise FileError("can't make directory for resources", dirpath)
     bar = Bar('Downloading resources', max=len(resources))
     for resource in resources:
         resource_request = make_request(resource["url"], False)
@@ -141,4 +150,4 @@ def save_to_file(filepath, mode, content, raise_Exception=True):
     except OSError as e:
         LOG.error(e)
         if raise_Exception:
-            raise e
+            raise FileError("can't save", filepath)
