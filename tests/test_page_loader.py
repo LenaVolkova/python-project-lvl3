@@ -1,4 +1,4 @@
-from page_loader import download
+from page_loader import download, FileError
 import requests
 import tempfile
 import os
@@ -127,4 +127,12 @@ def test_status_404(requests_mock):
 def test_exception():
     tmpdirname = tempfile.TemporaryDirectory()
     download("ht://asapcg.com", tmpdirname.name)
+
+
+@pytest.mark.xfail(raises=FileError)
+def test_fileerror(requests_mock):
+    text1 = 'testdata\n'
+    requests_mock.get(url, text=text1)
+    tmpdirname = tempfile.TemporaryDirectory()
+    download("ht://asapcg.com", tmpdirname.name + "wrong_name")
     
