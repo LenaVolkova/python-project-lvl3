@@ -10,6 +10,8 @@ url_img = 'https://ru.hexlet.io/assets/professions/nodejs.png'
 url_link1 = '/assets/application.css'
 url_link2 = '/courses'
 url_script = 'https://ru.hexlet.io/packs/js/runtime.js'
+url_for_exception1 = 'ht://www.yandex.ru'
+url_for_exception1 = 'https://asapcg.com/1'
 
 image_filename = './tests/fixtures/picture.png'
 input_filename = './tests/fixtures/input.html'
@@ -17,6 +19,7 @@ input_res_filename = './tests/fixtures/input_res.html'
 output_filename = './tests/fixtures/output.html'
 output_filename1 = './tests/fixtures/ru-hexlet-io-courses.html'
 output_filename2 = './tests/fixtures/ru-hexlet-io-courses_res.html'
+input_without_attribute = './tests/fixtures/input_tst.html'
 
 
 def test_download(requests_mock):
@@ -53,6 +56,15 @@ def test_downloading_page_with_images(requests_mock):
     with open(img_filename, 'rb') as img_file_res:
         img_res = img_file_res.read()
     assert img_res == img_content
+
+
+def test_attribute_missing(requests_mock):
+    tmpdirname = tempfile.TemporaryDirectory()
+    with open(input_without_attribute, 'r') as input_without_attribute_file:
+        input_no_attr = input_without_attribute_file.read()
+    requests_mock.get(url, text=input_no_attr)
+    filename = download(url, tmpdirname.name)
+    assert filename == tmpdirname.name + '/ru-hexlet-io-courses.html'
 
 
 def test_downloading_page_and_resources(requests_mock):
@@ -109,3 +121,10 @@ def test_status_404(requests_mock):
     requests_mock.get(url, text=text1, status_code=404)
     with pytest.raises(Exception, match=r".*404.*"):
         download(url, tmpdirname.name)
+
+
+@pytest.mark.xfail(raises=requests.RequestException)
+def test_exception():
+    tmpdirname = tempfile.TemporaryDirectory()
+    download("ht://asapcg.com", tmpdirname.name)
+    
