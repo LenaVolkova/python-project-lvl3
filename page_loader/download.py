@@ -56,7 +56,7 @@ def download(url, output_path):
     r = make_request(url)
     soup = BeautifulSoup(r.text, 'html.parser')
     resources_for_download = find_tags(soup, url)
-    name = make_filename(url)[0]
+    name = make_name(url)[0]
     dirurl = "{}_files".format(name)
     dirname = os.path.join(output_path, "{}_files".format(name))
     download_and_save_resources(resources_for_download, dirname, dirurl)
@@ -74,7 +74,7 @@ def find_tags(soup, url):
             if not to_download(url, resource):
                 continue
             resource_url = urljoin(url, resource)
-            filename, ext = make_filename(resource_url)
+            filename, ext = make_name(resource_url)
             res_for_downloading = {
                 "res": res,
                 "tag": tag,
@@ -102,7 +102,7 @@ def download_and_save_resources(list_of_resources, dirname, dirurl):
                 else:
                     content_t = ''
                 resource["ext"] = make_extension(content_t, tag)
-            resname = "{}.{}".format(resource["filename"], resource["ext"])
+            resname = resource["filename"] + resource["ext"]
             respath = os.path.join(dirname, resname)
             save_to_file(respath, 'wb+', new_r.content, False)
             resource["res"][attribute] = os.path.join(dirurl, resname)
@@ -111,40 +111,44 @@ def download_and_save_resources(list_of_resources, dirname, dirurl):
     return
 
 
-def make_filename(url):
-    res_url = urlparse(url)
-    url_name = res_url.netloc + res_url.path
-    if '.' in url_name:
-        after_last_fullstop = url_name.split(".")[-1]
-        if len(after_last_fullstop) <= 4 and after_last_fullstop.isalpha():
-            part_of_name = '.'.join(url_name.split(".")[0:-1])
-            res_name = make_name_by_template(part_of_name)
-            return res_name, after_last_fullstop
-    return make_name_by_template(url_name), ''
+# def make_filename(url):
+#     res_url = urlparse(url)
+#     url_name = res_url.netloc + res_url.path
+#     path_ext = os.path.splitext(url_name)
+#     if '.' in url_name:
+#         after_last_fullstop = url_name.split(".")[-1]
+#         if len(after_last_fullstop) <= 4 and after_last_fullstop.isalpha():
+#             part_of_name = '.'.join(url_name.split(".")[0:-1])
+#             res_name = make_name_by_template(part_of_name)
+#             return res_name, after_last_fullstop
+#     return make_name_by_template(url_name), ''
 
 
-def make_name_by_template(name, template=TEMPLATE, replacement=SYMB):
-    return re.sub(template, replacement, name)
+def make_name(url):
+    parsed_url = urlparse(url)
+    name_url = parsed_url.netloc + parsed_url.path
+    name, ext = os.path.splitext(name_url)
+    return re.sub(r'[^\w]', '-', name), ext
 
 
 def make_extension(content_type, tag):
     extensions = {
-        'gif': 'gif',
-        'jpeg': 'jpeg',
-        'png': 'png',
-        'tiff': 'tiff',
-        'css': 'css',
-        'csv': 'csv',
-        'html': 'html',
-        'javascript': 'js',
-        'xml': 'xml'}
+        'gif': '.gif',
+        'jpeg': '.jpeg',
+        'png': '.png',
+        'tiff': '.tiff',
+        'css': '.css',
+        'csv': '.csv',
+        'html': '.html',
+        'javascript': '.js',
+        'xml': '.xml'}
     for k in extensions:
         if k in content_type:
             return extensions[k]
     if tag == 'link':
-        return 'html'
+        return '.html'
     if tag == 'script':
-        return 'js'
+        return '.js'
     return ''
 
 
